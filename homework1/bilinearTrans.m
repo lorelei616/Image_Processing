@@ -1,0 +1,19 @@
+function outPicture = bilinearTrans(img, factor)
+    [imgH, imgW] = size(img);
+    height = round(imgH*factor);
+    width = round(imgW*factor);
+    [X, Y] = meshgrid(1:width, 1:height);
+     X_f = (X-1)/(height-1)*(imgH-1)+1;
+    Y_f = (Y-1)/(width-1)*(imgW-1)+1;
+    du = X_f - floor(X_f); 
+    dv = Y_f - floor(Y_f); 
+    A_X = floor(X_f);
+    A_Y = floor(Y_f);
+    A = A_Y + (A_X-1)*imgH; 
+    D_X = floor(X_f)+(du>0);
+    D_Y = floor(Y_f)+(dv>0);
+    D = D_Y + (D_X-1)*imgH; 
+    B = A_Y + (D_X-1)*imgH; 
+    C = D_Y + (A_X-1)*imgH; 
+    outPicture = (1-du).*(1-dv).*img(A)+(1-dv).*du.*img(B)+(1-du).*dv.*img(C)+du.*dv.*img(D);
+end
